@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>quote generator</title>
+    <style>
+    
+        body{
+            background: url(writing.gif);
+            background-size: cover;
+        }
+
+        .box{
+            background: #fff;
+            width: 700px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 10px 20px 0px;
+        }
+
+        .box h1{
+            margin-bottom: 40px;
+            text-decoration: underline;
+        }
+
+        .box blockquote{
+            font-size: 26px;
+            min-height: 110px;
+        }
+
+        .box blockquote::before, .box blockquote::after{
+            content: '"';
+        }
+
+        .box span{
+            display: block;
+            margin-top: 5px;
+            float: right;
+            position: relative;
+        }
+
+        .box span::before{
+            content: '-';
+            width: 20px;
+        }
+
+        .box div{
+            width: 100%;
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .box button{
+            background-color: rgb(72, 130, 184);
+            color: #fff;
+            border-radius: 25px;
+            width: 150px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .box button:active{
+            background: blue;
+        }
+
+        .box button:disabled{
+            background: #f1f1f1;
+            color: #333333;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+    
+<div class="box"> 
+    <h1>Random Kanye quote</h1>
+
+    <blockquote id="quote" class="CopyThat">Click on 'New quote'!</blockquote>
+
+    <span id="author">kanye west</span>
+    <div>
+        <button onclick="quotes(kanye_api_url)">
+            <span>New quote</span>
+        </button>
+        <button class="copy" data-copy=".CopyThat">
+            <span class="copy-label">Copy quote</span>
+        </button>
+    </div>
+</div>
+
+<script>
+
+const quote = document.getElementById("quote");
+const kanye_api_url = 'https://api.kanye.rest';
+
+async function quotes(url){
+    const response = await fetch(url);
+    var data = await response.json();
+    console.log(data);
+    quote.innerHTML = data.quote;
+
+}
+
+document.querySelectorAll(".copy").forEach(copyButton => {
+    copyButton.addEventListener("click", () => {
+        const targetEle = document.querySelector(copyButton.dataset.copy);
+        const txtToCopy = targetEle.textContent
+            .replace(/\s+/g, ' ')
+
+        navigator.clipboard.writeText(txtToCopy).then(() => {
+            const label = copyButton.querySelector(".copy-label");
+            const orgTxt = label.textContent;
+
+            copyButton.Disabled = true;
+            label.textContent = 'Copied!';
+
+            setTimeout(() => {
+                copyButton.Disabled = false;
+                label.textContent = orgTxt;
+            }, 2000)
+        })
+    });
+});
+
+</script>
+
+</body>
+</html>
